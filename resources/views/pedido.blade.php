@@ -6,6 +6,56 @@
     <title>Mi Pedido</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .pedido-header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .list-group-item {
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            border: none;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container py-5">
@@ -23,7 +73,10 @@
         @endif
 
         <!-- Título -->
-        <h1 class="text-center mb-4">Mi Pedido</h1>
+        <div class="pedido-header">
+            <h1>Mi Pedido</h1>
+            <p>Revisa los productos seleccionados y elige una opción de pago</p>
+        </div>
 
         <!-- Lista de productos -->
         <div class="card mb-4">
@@ -84,7 +137,7 @@
         </div>
 
         <!-- Mensaje de cuenta atrás -->
-        <div id="countdown" class="text-center mt-4" style="display: none;">
+        <div id="countdown" class="text-center mt-4 countdown" style="display: none;">
             <h3>Tu pedido llegará en <span id="timer"></span> segundos</h3>
         </div>
     </div>

@@ -1,35 +1,64 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MesaController;
+use App\Http\Controllers\AdminProductoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PedidoController;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Http\Request;
+use App\Http\Controllers\MesaController;
+use Illuminate\Support\Facades\Route;
 
-// Ruta para la página de inicio
 Route::get('/', function () {
-    return view('inicio');
-})->name('inicio');
+    return view('welcome');
+});
 
-// Ruta para mostrar el menú
-Route::get('/menu', [ProductoController::class, 'index'])->name('menu');
+// Rutas protegidas con middleware 'auth'
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    
+    // Pedidos
+    Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::post('/agregar-pedido', [PedidoController::class, 'agregarProducto'])->name('agregar.pedido');
+    Route::delete('/eliminar-pedido', [PedidoController::class, 'eliminarProducto'])->name('eliminar.pedido');
+    Route::post('/hacer-pedido', [PedidoController::class, 'hacerPedido'])->name('hacer.pedido');
+    Route::post('/pagar-todo', [PedidoController::class, 'pagarTodo'])->name('pagar.todo');
+    Route::post('/pagar-separado', [PedidoController::class, 'pagarSeparado'])->name('pagar.separado');
+    Route::get('/ver-pedido', [PedidoController::class, 'verPedido'])->name('ver.pedido');
 
-// Ruta para agregar productos al pedido
-Route::post('/agregar-pedido', [PedidoController::class, 'agregarProducto'])->name('agregar.pedido');
+    // Menú
+    Route::get('/menu', [ProductoController::class, 'index'])->name('menu');
+});
 
-// Ruta para pagar todo el pedido
-Route::post('/pagar-todo', [PedidoController::class, 'pagarTodo'])->name('pagar.todo');
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Mesas
+    Route::get('/mesas', [MesaController::class, 'index'])->name('mesas.index');
+    Route::get('/mesas/create', [MesaController::class, 'create'])->name('mesas.create');
+    Route::post('/mesas', [MesaController::class, 'store'])->name('mesas.store');
+    Route::get('/mesas/{mesa}/edit', [MesaController::class, 'edit'])->name('mesas.edit');
+    Route::put('/mesas/{mesa}', [MesaController::class, 'update'])->name('mesas.update');
+    Route::delete('/mesas/{mesa}', [MesaController::class, 'destroy'])->name('mesas.destroy');
+    
+});
 
-// Ruta para pagar por separado
-Route::post('/pagar-separado', [PedidoController::class, 'pagarSeparado'])->name('pagar.separado');
 
-// Ruta para ver el pedido actual
-Route::get('/pedidos', [PedidoController::class, 'verPedido'])->name('ver.pedido');
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Productos
+    Route::get('/productos', [AdminProductoController::class, 'index'])->name('productos.index');
+    Route::get('/productos/create', [AdminProductoController::class, 'create'])->name('productos.create');
+    Route::post('/productos', [AdminProductoController::class, 'store'])->name('productos.store');
+    Route::get('/productos/{producto}/edit', [AdminProductoController::class, 'edit'])->name('productos.edit');
+    Route::put('/productos/{producto}', [AdminProductoController::class, 'update'])->name('productos.update');
+    Route::delete('/productos/{producto}', [AdminProductoController::class, 'destroy'])->name('productos.destroy');
+});
 
-// Ruta para eliminar un producto del pedido
-Route::delete('/eliminar-pedido', [PedidoController::class, 'eliminarProducto'])->name('eliminar.pedido');
+// Rutas de perfil
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-//Ruta para mostrar el formulario de hacer pedido
-Route::post('/hacer-pedido', [PedidoController::class, 'hacerPedido'])->name('hacer.pedido');
+// Rutas de autenticación
+require __DIR__.'/auth.php';

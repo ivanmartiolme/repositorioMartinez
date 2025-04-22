@@ -17,71 +17,21 @@ class PedidoController extends Controller
         $pedido = session("pedido_$mesa_id", []);
         $total = session("total_$mesa_id", 0);
 
-        // Simular el menú (en un caso real, esto vendría de la base de datos)
-        $menu = [
-            'desayunos_postres' => [
-                ['id' => 1, 'nombre' => 'Café', 'precio' => 1.50],
-                ['id' => 2, 'nombre' => 'Tarta de Chocolate', 'precio' => 3.00],
-                ['id' => 3, 'nombre' => 'Tarta de Queso', 'precio' => 2.80],
-                ['id' => 4, 'nombre' => 'Croissant', 'precio' => 1.80],
-                ['id' => 5, 'nombre' => 'Zumo de Naranja', 'precio' => 2.50],
-                ['id' => 6, 'nombre' => 'Tostada con Mermelada', 'precio' => 2.00],
-                ['id' => 7, 'nombre' => 'Tostada con Tomate y Aceite', 'precio' => 2.20],
-                ['id' => 8, 'nombre' => 'Churros', 'precio' => 2.50],
-                ['id' => 9, 'nombre' => 'Bizcocho Casero', 'precio' => 3.00],
-            ],
-            'bocadillos' => [
-                ['id' => 10, 'nombre' => 'Bocadillo de Jamón', 'precio' => 4.00],
-                ['id' => 11, 'nombre' => 'Montado de Lomo', 'precio' => 2.50],
-                ['id' => 12, 'nombre' => 'Bocadillo de Tortilla', 'precio' => 3.50],
-                ['id' => 13, 'nombre' => 'Bocadillo de Atún', 'precio' => 3.80],
-                ['id' => 14, 'nombre' => 'Montado de Bacon', 'precio' => 2.80],
-                ['id' => 15, 'nombre' => 'Bocadillo Vegetal', 'precio' => 4.20],
-                ['id' => 16, 'nombre' => 'Montado de Pollo', 'precio' => 3.00],
-                ['id' => 17, 'nombre' => 'Bocadillo de Chorizo', 'precio' => 3.50],
-                ['id' => 18, 'nombre' => 'Bocadillo de Calamares', 'precio' => 4.50],
-                ['id' => 19, 'nombre' => 'Bocadillo de Especial', 'precio' => 5.50],
-            ],
-            'sandwiches_hamburguesas_bebidas' => [
-                ['id' => 20, 'nombre' => 'Sándwich Mixto', 'precio' => 3.50],
-                ['id' => 21, 'nombre' => 'Sándwich de Pollo', 'precio' => 4.00],
-                ['id' => 22, 'nombre' => 'Sándwich de Atún', 'precio' => 4.20],
-                ['id' => 23, 'nombre' => 'Sándwich de Jamón y Queso', 'precio' => 3.50],
-                ['id' => 24, 'nombre' => 'Sándwich de Pollo al Curry', 'precio' => 4.50],
-                ['id' => 25, 'nombre' => 'Sándwich Vegetal', 'precio' => 4.00],
-                ['id' => 26, 'nombre' => 'Sándwich de Bacon y Queso', 'precio' => 4.50],
-                ['id' => 27, 'nombre' => 'Sándwich de Huevo y Jamón', 'precio' => 4.20],
-                ['id' => 28, 'nombre' => 'Sándwich de Salmón', 'precio' => 5.00],
-                ['id' => 29, 'nombre' => 'Sándwich de Pavo', 'precio' => 4.80],
-                ['id' => 30, 'nombre' => 'Hamburguesa', 'precio' => 5.00],
-                ['id' => 31, 'nombre' => 'Hamburguesa con Queso', 'precio' => 5.50],
-                ['id' => 32, 'nombre' => 'Hamburguesa Vegetal', 'precio' => 6.00],
-                ['id' => 33, 'nombre' => 'Hamburguesa BBQ', 'precio' => 6.50],
-                ['id' => 34, 'nombre' => 'Hamburguesa de Pollo', 'precio' => 5.80],
-                ['id' => 35, 'nombre' => 'Hamburguesa Doble', 'precio' => 7.00],
-                ['id' => 36, 'nombre' => 'Cerveza', 'precio' => 2.50],
-                ['id' => 37, 'nombre' => 'Refresco', 'precio' => 2.00],
-                ['id' => 38, 'nombre' => 'Agua Mineral', 'precio' => 1.50],
-                ['id' => 39, 'nombre' => 'Tinto de Verano', 'precio' => 2.20],
-                ['id' => 40, 'nombre' => 'Vino Tinto', 'precio' => 3.00],
-                ['id' => 41, 'nombre' => 'Vino Blanco', 'precio' => 3.00],
-                ['id' => 42, 'nombre' => 'Copa de Sangría', 'precio' => 2.80],            
-            ],
-        ];
-
-        // Buscar el producto en el menú por su ID
-        $producto = collect($menu['desayunos_postres'])
-        ->merge($menu['bocadillos'])
-        ->merge($menu['sandwiches_hamburguesas_bebidas'])
-        ->firstWhere('id', (int) $request->pedido);
+        // Buscar el producto en la base de datos por su ID
+        $producto = Producto::find($request->pedido);
 
         if ($producto) {
-
-            $producto['unique_id'] = uniqid(); // Generar un ID único para el producto
+            // Convertir el producto en un array para la sesión
+            $productoArray = [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'precio' => $producto->precio,
+                'unique_id' => uniqid(), // Generar un ID único para el producto
+            ];
 
             // Agregar el producto al pedido
-            $pedido[] = $producto;
-            $total += $producto['precio'];
+            $pedido[] = $productoArray;
+            $total += $producto->precio;
 
             // Guardar el pedido actualizado en la sesión
             session(["pedido_$mesa_id" => $pedido, "total_$mesa_id" => $total]);
@@ -185,7 +135,16 @@ class PedidoController extends Controller
 
     public function hacerPedido(Request $request)
     {
-        $mesa_id = $request->mesa_id;
+        $mesa_id = session('mesa_id');
+        if (!$mesa_id) {
+            return redirect()->route('menu')->with('mensaje', 'Por favor, selecciona una mesa antes de hacer un pedido.');
+        }
+
+        Pedido::create([
+            'mesa_id' => $mesa_id
+        ]);
+    
+        return redirect()->route('confirmacion.pedido')->with('mensaje', 'Pedido realizado con éxito.');
 
         // Obtener el pedido actual de la sesión
         $pedido = session("pedido_$mesa_id", []);
@@ -241,4 +200,31 @@ class PedidoController extends Controller
         // Pasar el tiempo de preparación a la vista
         return redirect()->back()->with('tiempoPreparacion', $tiempoPreparacion);
     }
+/*
+    public function seleccionarMesa(Request $request)
+    {
+        $mesa = Mesa::findOrFail($request->mesa_id);
+
+        if ($mesa->estado === 'Ocupada') {
+            return redirect()->back()->with('mensaje', 'Esa mesa ya está ocupada. Elige otra.');
+        }
+
+        // Marcar la mesa como ocupada
+        $mesa->estado = 'Ocupada';
+        $mesa->save();
+
+        // Guardar la mesa en la sesión del cliente
+        session(['mesa_id' => $mesa->id]);
+
+        return redirect()->route('menu')->with('mensaje', 'Mesa seleccionada correctamente.');
+    }
+
+    public function liberarMesa(Pedido $pedido)
+    {
+        $pedido->mesa->estado = 'Disponible';
+        $pedido->mesa->save();
+
+        return redirect()->route('admin.mesas.index')->with('mensaje', 'Mesa liberada correctamente.');
+    }
+*/
 }

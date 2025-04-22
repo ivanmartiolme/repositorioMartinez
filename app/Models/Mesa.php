@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Mesa extends Model
 {
     use HasFactory;
-
+    
     protected $fillable = ['nombre', 'estado'];
 
-    public function pedidos()
+    public function estaOcupada()
     {
-        return $this->hasMany(Pedido::class);
+        return $this->estado === 'Ocupada';
     }
 }
