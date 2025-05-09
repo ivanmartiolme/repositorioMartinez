@@ -9,7 +9,7 @@ class Pedido extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['mesa_id', 'total', 'estado'];
+    protected $fillable = ['mesa_id', 'user_id', 'total', 'estado'];
 
     public function detalles()
     {
@@ -20,6 +20,11 @@ class Pedido extends Model
     public function mesa()
     {
         return $this->belongsTo(Mesa::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     

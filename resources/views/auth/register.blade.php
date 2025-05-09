@@ -54,6 +54,15 @@
                     @enderror
                 </div>
 
+                <!-- Campo tipo (cliente o administrador) -->
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo de Usuario</label>
+                    <select name="tipo" id="tipo" class="form-select" required>
+                        <option value="cliente" selected>Cliente</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+
                 <!-- Password -->
                 <div class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>

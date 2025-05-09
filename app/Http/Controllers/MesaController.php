@@ -64,12 +64,17 @@ class MesaController extends Controller
     }
     
     // Cambiar el estado de una mesa
-    public function cambiarEstado(Mesa $mesa)
+    public function liberar(Mesa $mesa)
     {
-        $mesa->estado = ($mesa->estado == 'Disponible') ? 'Ocupada' : 'Disponible';
+        if ($mesa->estado === 'Disponible') {
+            return redirect()->back()->with('mensaje', 'La mesa ya está disponible.');
+        }
+
+        // Cambiar el estado de la mesa a "Disponible"
+        $mesa->estado = 'Disponible';
         $mesa->save();
 
-        return redirect()->route('admin.mesas.index')->with('mensaje', 'Estado de la mesa actualizado con éxito.');
+        return redirect()->route('admin.mesas.index')->with('mensaje', 'Mesa liberada correctamente.');
     }
 
 }

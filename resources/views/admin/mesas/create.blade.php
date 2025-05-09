@@ -18,8 +18,7 @@
         @csrf
         
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre de la Mesa</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la Mesa" required>
         </div>
         
         <button type="submit" class="btn btn-primary">Guardar</button>

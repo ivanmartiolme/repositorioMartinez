@@ -95,7 +95,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Soporte Técnico</h5>
-                            <p class="card-text">Estamos aquí para ayudarte en todo momento.</p>
+                            <p class="card-text">Con cualquier duda que tengan consulte a los camareros.</p>
                         </div>
                     </div>
                 </div>

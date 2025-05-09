@@ -5,16 +5,13 @@
     <h1>Crear Producto</h1>
     <form action="{{ route('admin.productos.store') }}" method="POST">
         @csrf
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" name="nombre" id="nombre" class="form-control" required>
+        <div class="mb-3"><br>
+            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" required>
         </div>
         <div class="mb-3">
-            <label for="precio" class="form-label">Precio</label>
-            <input type="number" name="precio" id="precio" class="form-control" step="0.01" required>
+            <input type="number" name="precio" id="precio" class="form-control" step="0.01"  placeholder="Precio" required>
         </div>
         <div class="mb-3">
-            <label for="categoria" class="form-label">Categoría</label>
             <select name="categoria" id="categoria" class="form-select" required>
                 <option value="desayunos">Desayunos</option>
                 <option value="postres">Postres</option>
@@ -25,6 +22,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{{ route('admin.productos.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 @endsection

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'username', 
         'email',
         'password',
+        'tipo', // 'admin' o 'cliente'
     ];
 
     /**
@@ -45,4 +46,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function esAdmin()
+    {
+        return $this->tipo === 'admin';
+    }
+
+    public function esCliente()
+    {
+        return $this->tipo === 'cliente';
+    }
+
 }
