@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AdminProductoController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\MesaController;
@@ -73,15 +72,6 @@ Route::middleware(['auth', 'esadmin'])->prefix('admin')->name('admin.')->group(f
     Route::put('/productos/{producto}', [AdminProductoController::class, 'update'])->name('productos.update');
     Route::delete('/productos/{producto}', [AdminProductoController::class, 'destroy'])->name('productos.destroy');
 });
-
-//DEBATIR DI QUITARLO____________________________________________________________________________
-// Rutas de perfil
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-//_______________________________________________________________________________________________
 
 // Rutas de autenticación
 require __DIR__.'/auth.php';

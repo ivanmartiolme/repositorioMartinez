@@ -54,17 +54,14 @@ class PedidoController extends Controller
     public function pagarTodo(Request $request)
     {
         $pedido = Pedido::with('detalles.producto')->findOrFail($request->pedido_id);
-
         // Obtener detalles ya pagados desde sesión
         $yaPagados = session('pagados_' . $pedido->id, []);
-
         // Filtrar los detalles no pagados
         $pendientes = $pedido->detalles->whereNotIn('id', $yaPagados);
 
         if ($pendientes->isEmpty()) {
             return redirect()->route('menu')->with('mensaje', 'Todos los productos ya están pagados.');
         }
-
         // Armar los productos a mostrar
         $productos = $pendientes->map(function ($detalle) {
             return [
@@ -76,35 +73,28 @@ class PedidoController extends Controller
         });
 
         $total = $productos->sum('precio');
-
         // Marcar como pagados
         foreach ($pendientes as $detalle) {
             $yaPagados[] = $detalle->id;
         }
-
         session(['pagados_' . $pedido->id => $yaPagados]);
-
         // Verificar si ya se pagó todo el pedido
         $totalDetalles = $pedido->detalles()->count();
         if (count($yaPagados) >= $totalDetalles) {
             $pedido->estado = 'Pagado';
             $pedido->save();
-
             //Liberar la mesa
             $mesa = $pedido->mesa;
             $mesa->estado = 'Disponible';
             $mesa->save();
-
             // Limpiar sesión de pedido
             session()->forget("pedido_" . $pedido->mesa_id);
             session()->forget("total_" . $pedido->mesa_id);
             session()->forget("pagados_" . $pedido->id);
             session()->forget("mesa_id");
         }
-
         // Aquí defines mesa_id antes de enviarlo a la vista
         $mesa_id = $pedido->mesa_id;
-
         return view('pagar_todo', compact('productos', 'total', 'mesa_id'));
     }
 
@@ -172,8 +162,6 @@ class PedidoController extends Controller
     //FUNCION QUE NOS PERMITE VER EL PEDIDO
     public function verPedido()
     {
-        //dd(session()->all());
-
         $mesa_id = session('mesa_id');
 
         if (!$mesa_id) {
