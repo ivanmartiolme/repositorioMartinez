@@ -68,9 +68,6 @@
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center">
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
-                    @endif
                     <button type="submit" class="btn btn-custom">Iniciar Sesión</button>
                 </div>
             </form>
